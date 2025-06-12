@@ -1,0 +1,31 @@
+name: Test API
+description: Run tests for the API
+
+runs:
+  using: composite
+  steps:
+    - name: Setup PHP with PECL extension
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.3'
+        extensions: imagick, swoole
+
+    - name: Install dependencies
+      working-directory: api
+      shell: bash
+      run: composer install
+
+    - name: Set env files
+      working-directory: api
+      shell: bash
+      run: cp .env.test.example .env
+
+    - name: Generate App Key
+      working-directory: api
+      shell: bash
+      run: php artisan key:generate
+
+    - name: Run tests
+      working-directory: api
+      shell: bash
+      run: php artisan test

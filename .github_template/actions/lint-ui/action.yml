@@ -1,0 +1,20 @@
+name: Lint UI
+description: Run linting for the UI
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    - name: Install dependencies
+      working-directory: ui
+      shell: bash
+      run: npm ci
+
+    - name: Run lint
+      working-directory: ui
+      shell: bash
+      run: npm run lint

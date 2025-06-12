@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  namespace: <NAMESPACE>
+spec:
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+      - name: api
+        image: <API_IMAGE>
+        workingDir: /var/www/html
+        lifecycle:
+          postStart:
+            exec:
+                command: ['sh', '-c', 'yes n | cp -i /storage-initial/database/database.sqlite 2>/dev/null; php artisan key:generate ; php artisan optimize && php artisan migrate --force && php artisan db:seed --force']
+        envFrom:
+        - configMapRef:
+            name: api-config
+        - secretRef:
+            name: api-secret
+        volumeMounts:
+        - name: api
+          mountPath: /var/www/html/storage/database
+      volumes:
+      - name: api
+        persistentVolumeClaim:
+          claimName: api-pvc
