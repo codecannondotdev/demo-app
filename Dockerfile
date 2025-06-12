@@ -1,79 +1,14 @@
-# Use a PHP image with FPM
-FROM php:8.4-fpm-alpine3.20 AS php
+# Use the official Nginx image as the base image
+FROM nginx:alpine
 
-# Install system dependencies for PHP extensions and Composer
-RUN apk add --no-cache \
-    libpng libpng-dev \
-    libjpeg-turbo libjpeg-turbo-dev \
-    freetype freetype-dev \
-    libzip libzip-dev \
-    oniguruma oniguruma-dev \
-	aws-cli
+# Remove the default Nginx configuration file
+RUN rm /etc/nginx/conf.d/default.conf
 
-# Install PHP extensions
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo pdo_mysql gd opcache zip mbstring exif pcntl bcmath
-
-# Install Composer globally
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Set working directory
-WORKDIR /app/api
-
-# Copy the application's composer.json and composer.lock to /app
-COPY api/composer.json api/composer.lock ./
-
-# Install PHP dependencies
-RUN composer install --no-scripts --no-autoloader
-
-# Copy the remaining application code
-COPY ./api .
-
-RUN ls -la /app
-
-# Finish the composer installation
-RUN composer dump-autoload --optimize
-
-# Install Nginx
-RUN apk add --no-cache nginx
-
-# Create a directory for Nginx PID file and run directory
-RUN mkdir -p /run/nginx
-
-# Copy a custom nginx.conf into the image
-COPY nginx.production.conf /etc/nginx/http.d/default.conf
-
-# Forward request and error logs to Docker log collector
-RUN ln -sf /dev/stdout /var/log/nginx/access.log \
-    && ln -sf /dev/stderr /var/log/nginx/error.log
-
-# Make Database
-RUN mkdir /app/api/storage/database \
-    && touch /app/api/storage/database/database.sqlite
-
-# Make laravel log
-RUN touch /app/api/storage/logs/laravel.log
-
-# Fix permissions
-RUN chown -R www-data:www-data /app/api \
-    && chmod -R 755 /app/api/storage \
-    && chmod -R 755 /app/api/bootstrap/cache
-
-# Copy initial storage data to a separate directory
-RUN cp -r storage /storage-initial
-
-# Create .env file
-RUN cp .env.production.example .env
-
-# Make ui folder
-RUN mkdir /app/ui
-
-# Copy download script
-COPY ./download.sh /app/download.sh
-
+# Copy the custom Nginx configuration file into the container
+COPY nginx.conf /etc/nginx/conf.d
 
 # Expose port 80
 EXPOSE 80
 
-# Start PHP-FPM and Nginx
-CMD php-fpm -D && nginx -g 'daemon off;'
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]

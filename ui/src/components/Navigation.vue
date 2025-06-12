@@ -17,7 +17,67 @@
 				@click="toggleLocked" />
 		</div>
 		<div class="navigation__links-container">
-			<!-- GENERATOR(LINK) -->
+			<router-link
+				class="navigation__link-item"
+				:to="{ name: 'patients-list' }">
+				<i class="navigation__link-icon far fa-light fa-user-injured"></i>
+				<div class="navigation__link-title">Patients</div>
+			</router-link>
+			<router-link
+				class="navigation__link-item"
+				:to="{ name: 'doctors-list' }">
+				<i class="navigation__link-icon far fa-light fa-user-md"></i>
+				<div class="navigation__link-title">Doctors</div>
+			</router-link>
+			<router-link
+				class="navigation__link-item"
+				:to="{ name: 'nurses-list' }">
+				<i class="navigation__link-icon far fa-light fa-user-nurse"></i>
+				<div class="navigation__link-title">Nurses</div>
+			</router-link>
+			<router-link
+				class="navigation__link-item"
+				:to="{ name: 'departments-list' }">
+				<i class="navigation__link-icon far fa-light fa-hospital"></i>
+				<div class="navigation__link-title">Departments</div>
+			</router-link>
+			<router-link
+				class="navigation__link-item"
+				:to="{ name: 'appointments-list' }">
+				<i class="navigation__link-icon far fa-light fa-calendar-check"></i>
+				<div class="navigation__link-title">Appointments</div>
+			</router-link>
+			<router-link
+				class="navigation__link-item"
+				:to="{ name: 'treatments-list' }">
+				<i class="navigation__link-icon far fa-light fa-notes-medical"></i>
+				<div class="navigation__link-title">Treatments</div>
+			</router-link>
+			<router-link
+				class="navigation__link-item"
+				:to="{ name: 'medications-list' }">
+				<i class="navigation__link-icon far fa-light fa-pills"></i>
+				<div class="navigation__link-title">Medications</div>
+			</router-link>
+			<router-link
+				class="navigation__link-item"
+				:to="{ name: 'billings-list' }">
+				<i class="navigation__link-icon far fa-light fa-file-invoice-dollar"></i>
+				<div class="navigation__link-title">Billings</div>
+			</router-link>
+			<router-link
+				class="navigation__link-item"
+				:to="{ name: 'tags-list' }">
+				<i class="navigation__link-icon far far fa-tags"></i>
+				<div class="navigation__link-title">Tags</div>
+			</router-link>
+			<router-link
+				v-if="auth.user!.role === 'admin'"
+				class="navigation__link-item"
+				:to="{ name: 'users-list' }">
+				<i class="navigation__link-icon far fa-light fa-user"></i>
+				<div class="navigation__link-title">Users</div>
+			</router-link>
 		</div>
 		<div class="navigation__links-container navigation__links-container--bottom">
 			<router-link
