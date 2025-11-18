@@ -13,7 +13,7 @@
 <script setup lang="ts">
 import { reactive, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import Header from './components/Header.vue'
+import Header from '@/components/Header.vue'
 import Form from './components/Form.vue'
 import HeaderLoader from '@/components/HeaderLoader.vue'
 import Container from '@/components/Container.vue'

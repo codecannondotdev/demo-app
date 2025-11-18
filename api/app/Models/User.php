@@ -37,7 +37,6 @@ class User extends Authenticatable implements CanResetPassword, MustVerifyEmail
         'email',
         'password',
         'role',
-        /* USER_FOREIGN_KEYS */
     ];
 
     /**
@@ -73,5 +72,4 @@ class User extends Authenticatable implements CanResetPassword, MustVerifyEmail
     {
         return $this->hasVerifiedEmail();
     }
-    /* USER_RELATIONS */
 }

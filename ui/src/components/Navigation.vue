@@ -10,7 +10,47 @@
 					alt="logo" />
 			</div>
 			<div class="navigation__links-container">
-				<!-- GENERATOR(LINK) -->
+				<NavigationLink
+					:to="{ name: 'patients-list' }"
+					icon="fa-light fa-user-injured"
+					title="Patients" />
+				<NavigationLink
+					:to="{ name: 'doctors-list' }"
+					icon="far fa-user-doctor"
+					title="Doctors" />
+				<NavigationLink
+					:to="{ name: 'nurses-list' }"
+					icon="fa-light fa-user-nurse"
+					title="Nurses" />
+				<NavigationLink
+					:to="{ name: 'departments-list' }"
+					icon="fa-light fa-hospital"
+					title="Departments" />
+				<NavigationLink
+					:to="{ name: 'appointments-list' }"
+					icon="fa-light fa-calendar-check"
+					title="Appointments" />
+				<NavigationLink
+					:to="{ name: 'treatments-list' }"
+					icon="fa-light fa-notes-medical"
+					title="Treatments" />
+				<NavigationLink
+					:to="{ name: 'medications-list' }"
+					icon="fa-light fa-pills"
+					title="Medications" />
+				<NavigationLink
+					:to="{ name: 'billings-list' }"
+					icon="fa-light fa-file-invoice-dollar"
+					title="Billings" />
+				<NavigationLink
+					:to="{ name: 'tags-list' }"
+					icon="far fa-tags"
+					title="Tags" />
+				<NavigationLink
+					v-if="auth.user!.role === 'admin'"
+					:to="{ name: 'users-list' }"
+					icon="fa-light fa-user"
+					title="Users" />
 			</div>
 			<div class="navigation__links-container navigation__links-container--bottom">
 				<NavigationLink
