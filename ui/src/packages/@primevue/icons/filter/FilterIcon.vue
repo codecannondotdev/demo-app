@@ -1,0 +1,14 @@
+<template>
+    <svg width="14" height="14" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" v-bind="pti()">
+		<path d="M2.4 83.8C7.4 71.8 19.1 64 32 64l448 0c12.9 0 24.6 7.8 29.6 19.8s2.2 25.7-6.9 34.9L320 301.3 320 480c0 12.9-7.8 24.6-19.8 29.6s-25.7 2.2-34.9-6.9l-64-64c-6-6-9.4-14.1-9.4-22.6L192 301.3 9.4 118.6C.2 109.5-2.5 95.7 2.4 83.8zM480 96L32 96 219.3 283.3c3 3 4.7 7.1 4.7 11.3l0 121.4 64 64 0-185.4c0-4.2 1.7-8.3 4.7-11.3L480 96z" fill="currentColor" />
+	</svg>
+</template>
+
+<script>
+import BaseIcon from '@primevue/icons/baseicon';
+
+export default {
+    name: 'FilterIcon',
+    extends: BaseIcon
+};
+</script>
