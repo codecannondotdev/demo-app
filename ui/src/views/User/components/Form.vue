@@ -26,7 +26,7 @@
 			</FormInput>
 			<FormInput
 				v-if="!props.hideInputs?.includes('role')"
-				:required="true"
+				:required="false"
 				:error-message="formErrors.role"
 				label="Role">
 				<Select
@@ -35,14 +35,14 @@
 						{ title: 'admin', value: 'admin' },
 						{ title: 'user', value: 'user' },
 					]"
-					:show-clear="false"
+					:show-clear="true"
 					:disabled="!!props.forceValues.role"
 					option-label="title"
 					option-value="value" />
 			</FormInput>
 			<FormInput
 				v-if="!props.hideInputs?.includes('password')"
-				:required="true"
+				:required="false"
 				:error-message="formErrors.password"
 				label="Password">
 				<InputText
@@ -86,7 +86,7 @@ import Select from 'primevue/select'
 type FormData = {
 	name: string
 	email: string
-	role: User['role']
+	role: User['role'] | null
 	password: string | undefined
 }
 
@@ -132,7 +132,7 @@ const { formData, loading, formErrors, reset, submit, remove, isEdit } = useForm
 		({
 			name: '',
 			email: '',
-			role: 'admin',
+			role: null,
 			password: '',
 		}) satisfies FormData as FormData,
 	forceValues: () => props.forceValues,
