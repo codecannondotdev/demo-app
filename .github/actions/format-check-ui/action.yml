@@ -1,0 +1,20 @@
+name: Format UI
+description: Run format check for the UI
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '24'
+
+    - name: Install dependencies
+      working-directory: ui
+      shell: bash
+      run: npm ci
+
+    - name: Run format check
+      working-directory: ui
+      shell: bash
+      run: npm run format-check
