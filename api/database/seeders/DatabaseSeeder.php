@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
         DB::connection()->disableQueryLog();
 
         $this->withFastSeeding(function () {
-            $this->call([UserSeeder::class/* GENERATOR(SEEDER) */]);
+            $this->call([UserSeeder::class, PatientSeeder::class, DoctorSeeder::class, NurseSeeder::class, DepartmentSeeder::class, AppointmentSeeder::class, TreatmentSeeder::class, MedicationSeeder::class, BillingSeeder::class, TagSeeder::class]);
         });
     }
 
