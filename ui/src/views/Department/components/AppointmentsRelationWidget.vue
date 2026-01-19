@@ -1,0 +1,156 @@
+<template>
+	<Card class="appointments-relation-widget">
+		<template #title>
+			<h4 class="appointments-relation-widget__title">Appointments</h4>
+			<Button
+				icon="fal fa-link"
+				label="Connect"
+				outlined
+				severity="secondary"
+				@click="isRelationAddDialogActive = true" />
+			<Button
+				icon="fal fa-plus"
+				label="Create"
+				outlined
+				severity="secondary"
+				@click="isFormActive = true" />
+		</template>
+		<template #content>
+			<ApiTable
+				flat
+				:list-state="listState">
+				<Column
+					field="reason_for_visit"
+					header="Reason For Visit" />
+				<Column
+					header=""
+					:style="{ maxWidth: '92px', width: '92px' }">
+					<template #body="{ data }">
+						<ApiTableLinkButton
+							:to="{ name: 'appointments-edit', params: { id: data.id } }"
+							icon="fal fa-arrow-up-right-from-square" />
+						<Button
+							class="appointments-relation-widget__table-button"
+							icon="fal fa-xmark"
+							severity="secondary"
+							text
+							rounded
+							:loading="dissociateLoading === data.id"
+							@click.stop.prevent="dissociate(data)" />
+					</template>
+				</Column>
+			</ApiTable>
+		</template>
+	</Card>
+	<AppointmentsRelationAddDialog
+		v-model="isRelationAddDialogActive"
+		:department-id="props.departmentId"
+		@update="refresh()" />
+	<AppointmentForm
+		:as-dialog="true"
+		:visible="isFormActive"
+		:should-redirect="false"
+		:force-values="{ department_id: props.departmentId }"
+		:hide-inputs="['department_id']"
+		@submit="isFormActive = false"
+		@close="isFormActive = false"
+		@created="refresh()" />
+</template>
+
+<script setup lang="ts">
+import Card from 'primevue/card'
+import Button from 'primevue/button'
+import useApiTable from '@/components/Table/useApiTable'
+import { onBeforeMount, ref } from 'vue'
+import AppointmentsRelationAddDialog from './AppointmentsRelationAddDialog.vue'
+import AppointmentForm from '@/views/Appointment/components/Form.vue'
+import { useAppointmentListState } from '@/models/Appointment/States'
+import DepartmentsApi from '@/models/Department/Api'
+import type { Department } from '@/models/Department/Model'
+import type { Appointment } from '@/models/Appointment/Model'
+
+const props = defineProps<{
+	departmentId: Department['id']
+}>()
+
+const emit = defineEmits<{
+	(e: 'start-loading'): void
+	(e: 'stop-loading'): void
+}>()
+
+const listState = useAppointmentListState()
+listState.defaultParams = {
+	per_page: 10,
+	fromRelation: {
+		model: 'App\\Models\\Department',
+		id: props.departmentId,
+		relation: 'appointments',
+	},
+}
+const { ApiTable, Column, ApiTableLinkButton } = useApiTable(listState)
+
+const isRelationAddDialogActive = ref(false)
+const isFormActive = ref(false)
+const dissociateLoading = ref(null as null | number | string)
+
+onBeforeMount(() => {
+	refresh()
+})
+
+async function refresh() {
+	emit('start-loading')
+	try {
+		await listState.getList()
+	} finally {
+		emit('stop-loading')
+	}
+}
+
+async function dissociate(item: Appointment) {
+	dissociateLoading.value = item.id
+	emit('start-loading')
+	try {
+		await new DepartmentsApi().updateRelation(props.departmentId, 'appointments', {
+			method: 'dissociate',
+			params: [item.id],
+		})
+		dissociateLoading.value = null
+		await refresh()
+	} finally {
+		dissociateLoading.value = null
+		emit('stop-loading')
+	}
+}
+</script>
+
+<style lang="scss" scoped>
+.appointments-relation-widget {
+	width: 100%;
+	max-width: 600px;
+	overflow: hidden;
+
+	:deep(.p-card-body) {
+		padding: 20px 0 0;
+
+		.p-card-caption {
+			padding: 0px 20px 12px;
+
+			.p-card-title {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+
+				.appointments-relation-widget__title {
+					flex: 1;
+					text-align: left;
+				}
+			}
+		}
+	}
+
+	.appointments-relation-widget__table-button {
+		width: 30px;
+		height: 30px;
+	}
+}
+</style>

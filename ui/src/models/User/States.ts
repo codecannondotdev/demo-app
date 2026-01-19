@@ -1,7 +1,7 @@
-import type { UserModel } from '@/models/User/Model'
-import UsersApi from '@/models/User/Api'
 import DetailsState from '@/helpers/models/DetailsState'
 import ListState from '@/helpers/models/ListState'
+import type { UserModel } from '@/models/User/Model'
+import UsersApi from '@/models/User/Api'
 import type { LaravelPaginationResponse } from '@/interfaces/models/Laravel'
 
 export class UserDetailsState extends DetailsState<UsersApi, UserModel> {

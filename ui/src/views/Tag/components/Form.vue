@@ -1,0 +1,140 @@
+<template>
+	<FormContainer
+		class="form"
+		:visible
+		:title="isEdit ? 'Update Tag' : 'Create Tag'"
+		:as-dialog
+		@close="emit('close')">
+		<form @submit.prevent="submit">
+			<FormInput
+				v-if="!props.hideInputs?.includes('name')"
+				:required="true"
+				:error-message="formErrors.name"
+				label="Name">
+				<InputText
+					v-model="formData.name"
+					:disabled="!!props.forceValues.name" />
+			</FormInput>
+			<div class="form__footer-container">
+				<Button
+					v-if="isEdit && !props.hideRemove"
+					severity="danger"
+					icon="fal fa-trash"
+					label="Remove"
+					outlined
+					:loading="loading"
+					@click="remove" />
+				<Button
+					icon="fal fa-save"
+					:loading="loading"
+					:label="isEdit ? 'Update' : 'Create'"
+					type="submit"
+					@submit="submit" />
+			</div>
+		</form>
+	</FormContainer>
+</template>
+
+<script setup lang="ts">
+import Button from 'primevue/button'
+import FormContainer from '@/components/FormContainer.vue'
+import FormInput from '@/components/FormInput.vue'
+import InputText from 'primevue/inputtext'
+import TagsApi from '@/models/Tag/Api'
+import type { Tag } from '@/models/Tag/Model'
+import { toRef, watch } from 'vue'
+import { useForm } from '@/helpers/form'
+import { useRouter } from 'vue-router'
+
+type FormData = {
+	name: string
+}
+
+const emit = defineEmits<{
+	(e: 'start-loading'): void
+	(e: 'stop-loading'): void
+	(e: 'close'): void
+	(e: 'submit'): void
+	(e: 'created', entity: Tag | undefined): void
+	(e: 'updated'): void
+	(e: 'deleted'): void
+}>()
+
+const props = withDefaults(
+	defineProps<{
+		id?: Tag['id']
+		hideInputs?: (keyof FormData)[]
+		defaultValues?: Partial<FormData>
+		forceValues?: Partial<FormData>
+		shouldRedirect?: boolean
+		attachTo?: Record<string, { method: 'associate' | 'syncWithoutDetaching'; id: string | number }>
+		asDialog?: boolean
+		visible?: boolean
+		hideRemove?: boolean
+	}>(),
+	{
+		id: undefined,
+		hideInputs: () => [],
+		defaultValues: () => ({}),
+		forceValues: () => ({}),
+		shouldRedirect: true,
+		attachTo: undefined,
+		asDialog: false,
+		visible: false,
+		hideRemove: false,
+	},
+)
+
+const router = useRouter()
+const { formData, loading, formErrors, reset, submit, remove, isEdit } = useForm({
+	api: () => new TagsApi(),
+	defaultData: () =>
+		({
+			name: '',
+		}) satisfies FormData as FormData,
+	forceValues: () => props.forceValues,
+	attachTo: () => props.attachTo,
+	id: toRef(props, 'id'),
+	onStartLoading: () => emit('start-loading'),
+	onStopLoading: () => emit('stop-loading'),
+	onSubmit: () => emit('submit'),
+	onCreated: (entity) => {
+		if (props.shouldRedirect) {
+			router.replace({ name: 'tags-edit', params: { id: entity!.id } })
+		}
+		emit('created', entity)
+	},
+	onUpdated: () => emit('updated'),
+	onDeleted: () => emit('deleted'),
+})
+
+watch(() => props.visible, reset)
+</script>
+
+<style lang="scss">
+.form {
+	form {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 10px;
+
+		& > * {
+			width: 100%;
+		}
+
+		.form__footer-container {
+			display: flex;
+			justify-content: flex-end;
+			align-items: center;
+			gap: 10px;
+		}
+
+		&--edit {
+			.form__footer-container {
+				justify-content: space-between;
+			}
+		}
+	}
+}
+</style>

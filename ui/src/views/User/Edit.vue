@@ -1,6 +1,7 @@
 <template>
-	<Header :title="isEdit ? 'Edit User' : 'Create User'" />
-	<HeaderLoader :is-loading="loaders.size > 0" />
+	<Header
+		:title="isEdit ? 'Edit User' : 'Create User'"
+		:is-loading="loaders.size > 0" />
 	<Container class="edit">
 		<Form
 			:id="route.params.id as string"
@@ -11,12 +12,11 @@
 </template>
 
 <script setup lang="ts">
+import Header from '@/components/Header.vue'
+import Container from '@/components/Container.vue'
+import Form from './components/Form.vue'
 import { reactive, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import Header from '@/components/Header.vue'
-import Form from './components/Form.vue'
-import HeaderLoader from '@/components/HeaderLoader.vue'
-import Container from '@/components/Container.vue'
 
 const route = useRoute()
 const router = useRouter()
