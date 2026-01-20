@@ -1,0 +1,163 @@
+<template>
+	<Card class="billings-relation-widget">
+		<template #title>
+			<h4 class="billings-relation-widget__title">Billings</h4>
+			<Button
+				icon="fal fa-link"
+				label="Connect"
+				outlined
+				severity="secondary"
+				@click="isRelationAddDialogActive = true" />
+			<Button
+				icon="fal fa-plus"
+				label="Create"
+				outlined
+				severity="secondary"
+				@click="isFormActive = true" />
+		</template>
+		<template #content>
+			<ApiTable
+				flat
+				:list-state="listState">
+				<Column header="Billing Date">
+					<template #body="slotProps">
+						{{
+							slotProps.data.billing_date
+								? format(new Date(slotProps.data.billing_date), 'yyyy-MM-dd')
+								: ''
+						}}
+					</template>
+				</Column>
+				<Column
+					header=""
+					:style="{ maxWidth: '92px', width: '92px' }">
+					<template #body="{ data }">
+						<ApiTableLinkButton
+							:to="{ name: 'billings-edit', params: { id: data.id } }"
+							icon="fal fa-arrow-up-right-from-square" />
+						<Button
+							class="billings-relation-widget__table-button"
+							icon="fal fa-xmark"
+							severity="secondary"
+							text
+							rounded
+							:loading="dissociateLoading === data.id"
+							@click.stop.prevent="dissociate(data)" />
+					</template>
+				</Column>
+			</ApiTable>
+		</template>
+	</Card>
+	<BillingsRelationAddDialog
+		v-model="isRelationAddDialogActive"
+		:patient-id="props.patientId"
+		@update="refresh()" />
+	<BillingForm
+		:as-dialog="true"
+		:visible="isFormActive"
+		:should-redirect="false"
+		:force-values="{ patient_id: props.patientId }"
+		:hide-inputs="['patient_id']"
+		@submit="isFormActive = false"
+		@close="isFormActive = false"
+		@created="refresh()" />
+</template>
+
+<script setup lang="ts">
+import Card from 'primevue/card'
+import Button from 'primevue/button'
+import useApiTable from '@/components/Table/useApiTable'
+import { onBeforeMount, ref } from 'vue'
+import BillingsRelationAddDialog from './BillingsRelationAddDialog.vue'
+import BillingForm from '@/views/Billing/components/Form.vue'
+import { useBillingListState } from '@/models/Billing/States'
+import PatientsApi from '@/models/Patient/Api'
+import type { Patient } from '@/models/Patient/Model'
+import type { Billing } from '@/models/Billing/Model'
+import { format } from 'date-fns'
+
+const props = defineProps<{
+	patientId: Patient['id']
+}>()
+
+const emit = defineEmits<{
+	(e: 'start-loading'): void
+	(e: 'stop-loading'): void
+}>()
+
+const listState = useBillingListState()
+listState.defaultParams = {
+	per_page: 10,
+	fromRelation: {
+		model: 'App\\Models\\Patient',
+		id: props.patientId,
+		relation: 'billings',
+	},
+}
+const { ApiTable, Column, ApiTableLinkButton } = useApiTable(listState)
+
+const isRelationAddDialogActive = ref(false)
+const isFormActive = ref(false)
+const dissociateLoading = ref(null as null | number | string)
+
+onBeforeMount(() => {
+	refresh()
+})
+
+async function refresh() {
+	emit('start-loading')
+	try {
+		await listState.getList()
+	} finally {
+		emit('stop-loading')
+	}
+}
+
+async function dissociate(item: Billing) {
+	dissociateLoading.value = item.id
+	emit('start-loading')
+	try {
+		await new PatientsApi().updateRelation(props.patientId, 'billings', {
+			method: 'dissociate',
+			params: [item.id],
+		})
+		dissociateLoading.value = null
+		await refresh()
+	} finally {
+		dissociateLoading.value = null
+		emit('stop-loading')
+	}
+}
+</script>
+
+<style lang="scss" scoped>
+.billings-relation-widget {
+	width: 100%;
+	max-width: 600px;
+	overflow: hidden;
+
+	:deep(.p-card-body) {
+		padding: 20px 0 0;
+
+		.p-card-caption {
+			padding: 0px 20px 12px;
+
+			.p-card-title {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+
+				.billings-relation-widget__title {
+					flex: 1;
+					text-align: left;
+				}
+			}
+		}
+	}
+
+	.billings-relation-widget__table-button {
+		width: 30px;
+		height: 30px;
+	}
+}
+</style>
