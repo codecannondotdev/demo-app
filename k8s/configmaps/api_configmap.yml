@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-config
+  namespace: <NAMESPACE>
+data:
+  APP_NAME: "<NAMESPACE>"
+  APP_URL: "https://<DOMAIN>/api"
+  UI_URL: "https://<DOMAIN>"
+  SANCTUM_STATEFUL_DOMAINS: "<DOMAIN>"
+  SESSION_DOMAIN: "<DOMAIN>"
+  MAIL_MAILER: "smtp"
+  MAIL_HOST: "<MAIL_HOST>"
+  MAIL_PORT: "<MAIL_PORT>"
+  MAIL_ENCRYPTION: "ssl"
+  MAIL_FROM_ADDRESS: "noreply@<DOMAIN>"
