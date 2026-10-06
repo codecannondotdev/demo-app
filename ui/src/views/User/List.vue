@@ -1,5 +1,15 @@
 <template>
-	<Header title="Users" />
+	<Header title="Users">
+		<Button
+			icon="fal fa-plus"
+			label="Create"
+			@click="router.push({ name: 'users-create' })" />
+	</Header>
+	<Container>
+		<ListSearch
+			placeholder="Search Users"
+			:list-state="listState" />
+	</Container>
 	<Container>
 		<ApiTable :list-state="listState">
 			<Column
@@ -13,10 +23,10 @@
 				header="Role" />
 			<Column
 				header=""
-				:style="{ maxWidth: '112px', width: '112px' }">
+				:style="{ maxWidth: '92px', width: '92px' }">
 				<template #body="columnProps">
 					<ApiTableLinkButton
-						icon="fal fa-pen-to-square"
+						icon="fal fa-arrow-up-right-from-square"
 						:to="{ name: 'users-edit', params: { id: columnProps.data.id } }" />
 					<ApiTableRemoveButton :item="columnProps.data" />
 				</template>
@@ -27,11 +37,15 @@
 
 <script setup lang="ts">
 import Header from '@/components/Header.vue'
-import { onBeforeMount } from 'vue'
-import useApiTable from '@/components/Table/useApiTable'
 import Container from '@/components/Container.vue'
+import ListSearch from '@/components/ListSearch.vue'
+import Button from 'primevue/button'
+import { onBeforeMount } from 'vue'
+import { useRouter } from 'vue-router'
+import useApiTable from '@/components/Table/useApiTable'
 import { useUserListState } from '@/models/User/States'
 
+const router = useRouter()
 const listState = useUserListState()
 const { ApiTable, Column, ApiTableLinkButton, ApiTableRemoveButton } = useApiTable(listState)
 
