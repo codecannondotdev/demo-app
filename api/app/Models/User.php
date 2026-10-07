@@ -18,7 +18,6 @@ use Laravel\Sanctum\HasApiTokens;
     'email',
     'password',
     'role',
-    /* USER_FOREIGN_KEYS */
 ])]
 #[Hidden([
     'password',
@@ -64,5 +63,4 @@ class User extends Authenticatable implements CanResetPassword, MustVerifyEmail
     {
         return $this->hasVerifiedEmail();
     }
-    /* USER_RELATIONS */
 }

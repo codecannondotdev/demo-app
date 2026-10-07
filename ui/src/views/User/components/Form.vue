@@ -28,23 +28,20 @@
 				v-if="!props.hideInputs?.includes('role')"
 				label="Role"
 				:error-message="formErrors.role"
-				:required="true">
+				:required="false">
 				<Select
 					v-model="formData.role"
 					option-label="title"
 					option-value="value"
 					:disabled="!!props.forceValues.role"
-					:options="[
-						{ title: 'admin', value: 'admin' },
-						{ title: 'user', value: 'user' },
-					]"
-					:show-clear="false" />
+					:options="Object.entries(Role).map(([value, title]) => ({ title, value }))"
+					:show-clear="true" />
 			</FormInput>
 			<FormInput
 				v-if="!props.hideInputs?.includes('password')"
 				label="Password"
 				:error-message="formErrors.password"
-				:required="true">
+				:required="false">
 				<InputText
 					v-model="formData.password"
 					type="password"
@@ -72,21 +69,22 @@
 </template>
 
 <script setup lang="ts">
-import { toRef, watch } from 'vue'
-import { useRouter } from 'vue-router'
-import UsersApi from '@/models/User/Api'
-import type { User } from '@/models/User/Model'
-import { useForm } from '@/helpers/form'
-import FormInput from '@/components/FormInput.vue'
 import Button from 'primevue/button'
 import FormContainer from '@/components/FormContainer.vue'
+import FormInput from '@/components/FormInput.vue'
 import InputText from 'primevue/inputtext'
 import Select from 'primevue/select'
+import UsersApi from '@/models/User/Api'
+import type { User } from '@/models/User/Model'
+import { Role } from '@/models/User/Enums'
+import { toRef, watch } from 'vue'
+import { useForm } from '@/helpers/form'
+import { useRouter } from 'vue-router'
 
 type FormData = {
 	name: string
 	email: string
-	role: User['role']
+	role: User['role'] | null
 	password: string | undefined
 }
 
@@ -132,7 +130,7 @@ const { formData, loading, formErrors, reset, submit, remove, isEdit } = useForm
 		({
 			name: '',
 			email: '',
-			role: 'admin',
+			role: null,
 			password: '',
 		}) satisfies FormData as FormData,
 	forceValues: () => props.forceValues,

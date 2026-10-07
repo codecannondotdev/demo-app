@@ -10,7 +10,47 @@
 					src="@/assets/logo.png" />
 			</div>
 			<div class="navigation__links-container">
-				<!-- GENERATOR(LINK) -->
+				<NavigationLink
+					icon="fa-light fa-user-injured"
+					title="Patients"
+					:to="{ name: 'patients-list' }" />
+				<NavigationLink
+					icon="far fa-user-doctor"
+					title="Doctors"
+					:to="{ name: 'doctors-list' }" />
+				<NavigationLink
+					icon="fa-light fa-user-nurse"
+					title="Nurses"
+					:to="{ name: 'nurses-list' }" />
+				<NavigationLink
+					icon="fa-light fa-hospital"
+					title="Departments"
+					:to="{ name: 'departments-list' }" />
+				<NavigationLink
+					icon="fa-light fa-calendar-check"
+					title="Appointments"
+					:to="{ name: 'appointments-list' }" />
+				<NavigationLink
+					icon="fa-light fa-notes-medical"
+					title="Treatments"
+					:to="{ name: 'treatments-list' }" />
+				<NavigationLink
+					icon="fa-light fa-pills"
+					title="Medications"
+					:to="{ name: 'medications-list' }" />
+				<NavigationLink
+					icon="fa-light fa-file-invoice-dollar"
+					title="Billings"
+					:to="{ name: 'billings-list' }" />
+				<NavigationLink
+					icon="far fa-tags"
+					title="Tags"
+					:to="{ name: 'tags-list' }" />
+				<NavigationLink
+					v-if="auth.user!.role === 'admin'"
+					icon="fa-light fa-user"
+					title="Users"
+					:to="{ name: 'users-list' }" />
 			</div>
 			<div class="navigation__links-container navigation__links-container--bottom">
 				<NavigationLink
