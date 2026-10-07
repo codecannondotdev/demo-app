@@ -1,0 +1,16 @@
+{
+  "name": "codecannon-docs",
+  "private": true,
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview"
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.4",
+    "vitepress-plugin-llms": "^1.11.0"
+  },
+  "dependencies": {
+    "posthog-js": "^1.313.0"
+  }
+}
