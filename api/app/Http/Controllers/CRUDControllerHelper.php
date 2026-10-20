@@ -59,7 +59,7 @@ class CRUDControllerHelper extends Controller
         }
 
         if (! is_null(request('search'))) {
-            $entities = $this->model->search(request('search'));
+            $entities = $entities->search(request('search'));
         }
 
         if (! is_null(request('filters'))) {
