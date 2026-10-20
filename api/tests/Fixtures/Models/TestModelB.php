@@ -2,10 +2,15 @@
 
 namespace Tests\Fixtures\Models;
 
+use App\Traits\Searchable;
 use Illuminate\Database\Eloquent\Model;
 
 class TestModelB extends Model
 {
+    use Searchable;
+
+    protected $searchable = ['id'];
+
     public $table = 'test_model_b';
 
     public $fillable = ['id', 'test_model_a_id'];
